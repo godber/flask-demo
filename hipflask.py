@@ -10,6 +10,8 @@ from flask import (
     abort,
 )
 
+from signals import post_added
+
 app = Flask(__name__)
 app.config.update({
     'SECRET_KEY': 'keep it secret, keep it safe!'
@@ -28,6 +30,10 @@ class Post(object):
             'author': self.author,
             'date': self.date.strftime('%H:%M:%S')
         }
+
+    def __repr__(self):
+        """Return post information when Post is printed"""
+        return "Post by %s at %s" % (self.author, self.date)
 
 
 POSTS = [
@@ -78,6 +84,7 @@ def get_posts():
 def add_post():
     post = Post(request.form['body'], request.form['author'])
     POSTS.append(post)
+    post_added.send(post)
     session['author'] = post.author
     return redirect(url_for('index'))
 
