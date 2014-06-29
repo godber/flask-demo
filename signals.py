@@ -6,9 +6,6 @@ post_added = hipflask_signals.signal('post-added')
 
 
 # Signal Handlers
+@post_added.connect
 def log_post(post):
     print 'Received post', post
-
-
-# Connect to Signals
-post_added.connect(log_post)
